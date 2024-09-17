@@ -1,0 +1,160 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>
+	Daily Retail/Wholesale Report
+</title><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="-1"><meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+
+<script type="text/javascript">
+
+    function PrintPanel() {
+        var panel = document.getElementById("Panel1");
+        //document.getElementById('Panel1').style.visibility = true;
+        document.getElementById('Panel1').style.visibility = 'visible';
+        var printWindow = window.open('', '', '');
+        printWindow.document.write('<html><head><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;charset=utf-8" /><style type="text/css"> @media print{ @page {size:landscape;margin:0px auto;}} @page {size:landscape;}</style></head><body style=font-size:16px; padding:0px;>');
+        printWindow.document.write(panel.innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        setTimeout(function () {
+            //printWindow.print();
+        }, 500);
+        return false;
+    }
+    </script>
+
+     <style type="text/css">
+        @media print
+        {
+            .MyCssClass thead
+            {
+                display: table-header-group;
+            }
+        
+            .test1 thead
+            {
+                display: table-header-group;
+            }
+            .test1 tfoot
+            {
+                display: table-footer-group;
+            }
+        }
+        .style5
+        {
+            margin: auto;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <form name="form1" method="post" action="./Report_daily1_web_Statewise.aspx" id="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="y93YVvs7qnHMVw4lhEdeZm8AwsixmGOXh617/2lBzXBxT2a8RNjhgYGqEeNqf8+SQf/TssHaAqVHlvnjyk1Pwp9baU5fGgoqYHoAryi93WRXCkyQZB+TVGsTTMiml5XhzwLcFZ4odJaUE5A2/KudzEASTXsbAhi/6qZ5Wpn+/jHWJf0GE1DAlGTMHcUMLOrjUiFwQUnxI2oY/YUecD4bpI116s3DCboLaJ+sX/oQ6UYLoMx/k1TmWUG/WFCGjIUIKyco98aDEESi5LXqpGZ+Ez92YfMiCItLtx7zW0fv8a4KplZGe0tznpbn2k1eMYyRoAeciGHeP2/nYmKPKtfXdAxh0WhJLjN63YL1IC6SrCjSyiLqpI/TAZQvS1kjqHWwrYQXXikMliB0mQKOXkiRsmZQxf0/NKEuqT+EIHr479q67e0LxABgUIIlkOidiEfMbGoByGQ8O4x1E6AlrZ6I6SmAgagV7MQhh6UAK1YcGX3cSI+zSn4uxXHanQ5yIPs5NzF+TJk4yiOnLMZppjxH2U/LQbYoiUtDqNih5MXucfROhr6u7Oq2HNzcwLrylpmPcyLZIREQAdkZeYkizYBKOxsTDnQwy+TjakcbOSu15aQwopthXIV2S6SZGnF+n1JXgJ39Kn183EBJ39LRJguDap96wFpPCzjoisFttlnGoE1duYryiySveHIipl8ndZSIwWzF1Bg9aSzRp44oeEqd1xkyf5l3dEsikkE6/7esBbSxmQOUjBp0+Lsjuy7XjDPMt35EO/GkRCsByZApkoCPPA5qhfZHaWxv1XXi7A/QhPsO2pV7Q1JABwTuRuYkuXptKQhThBYTDk2QoCOEQYOIMKqvtQCCj8ZAxMOJKhukteY+l7pdnbKdoBJCnAUL3xewNaAeLadtOqrMbHrvKuK9b5LGVaDp5MbpJtuU57VawRd7VjfnVzDRzpApLb8+aGYhVIklbqizD9a6Y5qtnxkBZhibZR59Cy4m6HcK3r4a+IRFVMP4YnrKL/Ug4u7BCQkPp/iXkKQehMJ/NXQfrXmhN6cjGlsOY+HA2a80GJMc+FzV2ijU8uboPMGJ/fL2spmDtVOEABxsSR7oINj79vAQs4lIn9t6R6PLtdXyfPV3S1if7lFxssGtRtFsztLf86ugO9NSKfVRmOIaNTLOPXqAN958rWPpgJmElINwucfve68YRxueGiLoFvZT0JP9as8TasRxB23rr4cUPyWkOS23X3oGcV7p+jKHOzMttz5M/x9gxQwJAtA1QlrrDNbGtpIbYdKo9nZtzst7HhYiBgrIfDaYs8xIsiM0mXkmtpdACcZoR1oKuYO/wtRKSeSFYSWI5Xy36NuDdlSJm+ltMsDVpRWOI7m8OijMLihjYzdAZidC1BdD5fMkEmPOBBfnoCwrgb8IiNHhr+x0UskEVP4zqF4YgCnWndk463DulA5//kjjoJ+ckq2JxRVlTou7/qWI8sWLj9T9cWBVca7p/r+T7nrGmfe/dXFOGIY8KD/XOaEnXhRhxrTcwUXQL8DuzNWIVjdTgcnMcy8bvJwIM/7/LrFHxtCoH8VtUs/Z2P2fGvjRyy4xau8um+jBAjLyLDihuAE9fyccb6fp7ZK7NMHpEWW5rXYreDY7RPGJLgfRrqjmv3I2x3OlW3L3UoGpBfE06/Im7VB8wC0iXjALs/YqxLV298DcTJhwa2kXeLb8r+7mweUYc7JsORlvt9cizvSw8/0A4vDEOkePmP/MFGujDpsyHJm5IsLBtKAeernummvTPl7dGttX541wzcDJmh2r">
+</div>
+
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F1774AEE">
+	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="wTltrGPMQBoMynvccJVsbvVLXPoxhsWpHilWrsjei/fXHC3JwDwL3o9PhvJOiq+/VQj0cZAY0wb2xY9Xxe/uZNJOykFiWSeIp0pOhBEf5PMMtHB+l49yh7LQPHg9Cx73zsYQTgd692zEW7hNf6CVVe2/5Hnk9nXh7uMbjlKV0D5q+ymPJqzwruxrupqn5Aor">
+</div>
+        <div class="style5" align="left">
+        <table>
+            <tbody><tr>
+                <td>
+                    <input type="submit" name="btn_back" value="Back" id="btn_back" style="font-size:XX-Small;position: relative; top: 0px; left: 3px; width: 46px; height: 21px;">
+                    <input type="submit" name="btn_print" value="Print" onclick="return PrintPanel();" id="btn_print" style="font-size:XX-Small;position: relative; top: 0px; left: 3px; width: 46px; height: 21px;">
+
+                  
+                    <input type="image" name="btnsave" id="btnsave" text="export to excel" src="../Images/Excel-xls.jpeg" style="border-width:0px;position: relative; top: 0px; left: 3px; width: 46px; height: 21px;">
+
+                </td>
+            </tr>
+            <tr>
+                <td class="style1">
+
+                   
+                    <div id="Panel1" style="height:78px;left: -2px; position: relative;   top: 0px; width: 1800px;">
+	 <div class="test1"><table style="margin:auto;"><thead><tr><td><div><div style="width:20%; float:left;">&nbsp;</div><div style="width:60%; float:left; text-align:center;"><b>Department of Consumer Affairs&nbsp;( Price Monitoring Division)</b></div><table width="95%" align="center"><tbody><tr><td align="left"><font size="3"><b>Date&nbsp;&nbsp;21/12/2021 </b></font><b> </b></td><td width="100%" align="center"><font size="3" color="black"><center><strong>Daily Wholesale Prices Of Essential Commodities</strong></center></font></td><td align="right"><font size="4"> <b>Unit:&nbsp;(₹/qtl.)</b></font></td></tr></tbody></table></div></td></tr></thead><tbody><tr><td><div class="MyCssClass"><div>
+		<table cellspacing="0" align="Center" rules="all" border="1" id="gv0" style="border-collapse:collapse;">
+			<thead>
+				<tr>
+					<th scope="col">States/UTs</th><th scope="col">Rice</th><th scope="col">Wheat</th><th scope="col">Atta (Wheat)</th><th scope="col">Gram Dal</th><th scope="col">Tur/Arhar Dal</th><th scope="col">Urad Dal</th><th scope="col">Moong Dal</th><th scope="col">Masoor Dal</th><th scope="col">Sugar</th><th scope="col">Milk @</th><th scope="col">Groundnut Oil (Packed)</th><th scope="col">Mustard Oil (Packed)</th><th scope="col">Vanaspati (Packed)</th><th scope="col">Soya Oil (Packed)</th><th scope="col">Sunflower Oil (Packed)</th><th scope="col">Palm Oil (Packed)</th><th scope="col">Gur</th><th scope="col">Tea Loose</th><th scope="col">Salt Pack (Iodised)</th><th scope="col">Potato</th><th scope="col">Onion</th><th scope="col">Tomato</th>
+				</tr>
+			</thead><tbody>
+				<tr align="left">
+					<td align="right" style="background-color:Gray;font-weight:bold;"> Average Price</td><td>3041.19</td><td>2397.91</td><td>2593.16</td><td>6743.42</td><td>9296.85</td><td>9662.73</td><td>9172.6</td><td>8768.28</td><td>3843.47</td><td>4807.26</td><td>17113.06</td><td>17710.03</td><td>12889.13</td><td>13993.46</td><td>15546.78</td><td>12209.62</td><td>4203.25</td><td>25103.45</td><td>1504.92</td><td>1742.41</td><td>2849.58</td><td>3743.1</td>
+				</tr><tr align="left">
+					<td align="right" style="background-color:Gray;font-weight:bold;"> Maximum Price</td><td>5633</td><td>3600</td><td>5450</td><td>10300</td><td>11500</td><td>12900</td><td>11500</td><td>10900</td><td>4600</td><td>6550</td><td>24500</td><td>21978</td><td>17582</td><td>20879</td><td>20879</td><td>15747</td><td>9000</td><td>51934</td><td>2320</td><td>4300</td><td>5500</td><td>8000</td>
+				</tr><tr align="left">
+					<td align="right" style="background-color:Gray;font-weight:bold;"> Minimum Price</td><td>1800</td><td>1500</td><td>1900</td><td>5500</td><td>6800</td><td>7200</td><td>7250</td><td>6450</td><td>3000</td><td>3000</td><td>10500</td><td>10200</td><td>9000</td><td>7700</td><td>12100</td><td>7590</td><td>2500</td><td>12000</td><td>600</td><td>625</td><td>700</td><td>900</td>
+				</tr><tr align="left">
+					<td align="right" style="background-color:Gray;font-weight:bold;"> Modal Price</td><td>2800</td><td>3000</td><td>2500</td><td>6500</td><td>9000</td><td>9500</td><td>9000</td><td>8500</td><td>3800</td><td>4600</td><td>17500</td><td>17500</td><td>13000</td><td>14000</td><td>16000</td><td>12500</td><td>4000</td><td>22000</td><td>1800</td><td>2000</td><td>2500</td><td>3000</td>
+				</tr><tr align="left">
+					<td>Andaman and Nicobar</td><td>3700</td><td>3600</td><td>5325</td><td>8300</td><td>10400</td><td>12150</td><td>10800</td><td>10550</td><td>4500</td><td>6150</td><td>&nbsp;</td><td>21239</td><td>17582</td><td>&nbsp;</td><td>15677</td><td>14052.5</td><td>5900</td><td>29500</td><td>1700</td><td>3650</td><td>5250</td><td>8000</td>
+				</tr><tr align="left">
+					<td>Andhra Pradesh</td><td>3966.67</td><td>2876.67</td><td>2900</td><td>6566.67</td><td>8766.67</td><td>9800</td><td>9300</td><td>9000</td><td>3726.67</td><td>4633.33</td><td>14833.33</td><td>19200</td><td>11766.67</td><td>&nbsp;</td><td>13500</td><td>11600</td><td>4433.33</td><td>25000</td><td>966.67</td><td>2533.33</td><td>2833.33</td><td>3066.67</td>
+				</tr><tr align="left">
+					<td>Assam</td><td>3200</td><td>2000</td><td>2500</td><td>6400</td><td>9500</td><td>9400</td><td>8900</td><td>8700</td><td>4100</td><td>5900</td><td>17500</td><td>18700</td><td>12100</td><td>13000</td><td>14500</td><td>12500</td><td>4100</td><td>19000</td><td>800</td><td>1300</td><td>3400</td><td>&nbsp;</td>
+				</tr><tr align="left">
+					<td>Bihar</td><td>3011.18</td><td>1802.35</td><td>2227.65</td><td>6526.47</td><td>9025.88</td><td>9652.35</td><td>9265</td><td>8517.06</td><td>3947.65</td><td>4627.88</td><td>18980</td><td>17635.76</td><td>13151.88</td><td>14420.59</td><td>17700</td><td>12720.64</td><td>3865</td><td>26111.76</td><td>1534.41</td><td>1334.12</td><td>2550</td><td>4205.88</td>
+				</tr><tr align="left">
+					<td>Chandigarh</td><td>3200</td><td>1750</td><td>1950</td><td>6650</td><td>10800</td><td>10600</td><td>11000</td><td>8850</td><td>3150</td><td>5200</td><td>17150</td><td>18550</td><td>13650</td><td>14600</td><td>17100</td><td>12450</td><td>4000</td><td>19850</td><td>1800</td><td>700</td><td>1700</td><td>3150</td>
+				</tr><tr align="left">
+					<td>Chhattisgarh</td><td>2920</td><td>2610</td><td>2670</td><td>7370</td><td>8900</td><td>9280</td><td>9620</td><td>9220</td><td>3570</td><td>4725</td><td>17560</td><td>17590</td><td>12200</td><td>13900</td><td>14400</td><td>12320</td><td>3780</td><td>26575</td><td>1420</td><td>2040</td><td>2850</td><td>1980</td>
+				</tr><tr align="left">
+					<td>Delhi</td><td>2400</td><td>2180</td><td>2280</td><td>5800</td><td>8800</td><td>9800</td><td>8650</td><td>8700</td><td>3780</td><td>&nbsp;</td><td>17582</td><td>19413</td><td>14066</td><td>14505</td><td>16336</td><td>12747</td><td>3050</td><td>20500</td><td>2080</td><td>625</td><td>1925</td><td>1900</td>
+				</tr><tr align="left">
+					<td>Gujarat</td><td>2813</td><td>2540</td><td>2546</td><td>6557.5</td><td>8660</td><td>9092</td><td>8126</td><td>8336</td><td>3646</td><td>5225</td><td>14807.5</td><td>16357.5</td><td>11265</td><td>13187.5</td><td>13912.5</td><td>10875</td><td>4173</td><td>24257.5</td><td>1050</td><td>2060</td><td>2852</td><td>4607.5</td>
+				</tr><tr align="left">
+					<td>Haryana</td><td>2933.33</td><td>1991.67</td><td>2350</td><td>6233.33</td><td>9033.33</td><td>8833.33</td><td>8600</td><td>8200</td><td>3866.67</td><td>5016.67</td><td>17743.67</td><td>17760</td><td>13811.67</td><td>14628.33</td><td>16344.33</td><td>13195.67</td><td>3500</td><td>24000</td><td>1583.33</td><td>1433.33</td><td>2066.67</td><td>2900</td>
+				</tr><tr align="left">
+					<td>Himachal Pradesh</td><td>2836.38</td><td>2140</td><td>2369.38</td><td>6575.88</td><td>10003.88</td><td>9625.13</td><td>9018.13</td><td>9239.13</td><td>4026.25</td><td>5111</td><td>17640.5</td><td>18273.88</td><td>14398.13</td><td>14012.86</td><td>16462.5</td><td>12966.67</td><td>3814.75</td><td>26118.83</td><td>1921.29</td><td>1230.63</td><td>2781.25</td><td>3818.75</td>
+				</tr><tr align="left">
+					<td>Jammu and Kashmir</td><td>3083.33</td><td>2366.67</td><td>2600</td><td>7116.67</td><td>9916.67</td><td>10116.67</td><td>9566.67</td><td>9383.33</td><td>4133.33</td><td>4500</td><td>&nbsp;</td><td>18125</td><td>13966.67</td><td>15000</td><td>17883.33</td><td>12400</td><td>3733.33</td><td>28700</td><td>2106.67</td><td>1383.33</td><td>2866.67</td><td>4116.67</td>
+				</tr><tr align="left">
+					<td>Jharkhand</td><td>2937.5</td><td>2240.63</td><td>2436.25</td><td>6550</td><td>8893.75</td><td>9437.5</td><td>8937.5</td><td>8425</td><td>3968.75</td><td>4780</td><td>18955.17</td><td>18001</td><td>12535.57</td><td>15772.25</td><td>17219.17</td><td>11962</td><td>3746.88</td><td>23900</td><td>1497.5</td><td>1418.75</td><td>2912.5</td><td>3750</td>
+				</tr><tr align="left">
+					<td>Karnataka</td><td>3977</td><td>2880</td><td>2750</td><td>6785</td><td>9260</td><td>10027.27</td><td>8974.55</td><td>9072.22</td><td>3617.27</td><td>3890</td><td>15612</td><td>17083.64</td><td>11560</td><td>13034</td><td>14150</td><td>12231.82</td><td>4214.55</td><td>25830</td><td>1049.55</td><td>1963.64</td><td>2870</td><td>4050</td>
+				</tr><tr align="left">
+					<td>Kerala</td><td>3717.14</td><td>3135.71</td><td>2715.67</td><td>7578.57</td><td>9542.86</td><td>10450</td><td>9685.71</td><td>9335.71</td><td>3797.14</td><td>4420.8</td><td>18541.75</td><td>18480</td><td>14035.71</td><td>&nbsp;</td><td>13913.83</td><td>12107.67</td><td>5000</td><td>20114.29</td><td>844.29</td><td>2985.71</td><td>3950</td><td>5100</td>
+				</tr><tr align="left">
+					<td>Madhya Pradesh</td><td>2616.82</td><td>2040.91</td><td>2402.09</td><td>6484.18</td><td>9390.45</td><td>8702.27</td><td>8568.64</td><td>7797.27</td><td>3749.55</td><td>5024.09</td><td>16591.11</td><td>16731</td><td>12605</td><td>13346</td><td>15346.11</td><td>9159.17</td><td>3798.64</td><td>24492.91</td><td>1362.27</td><td>1310.45</td><td>1954.09</td><td>2405.45</td>
+				</tr><tr align="left">
+					<td>Maharashtra</td><td>2800</td><td>2700</td><td>2512.5</td><td>6937.5</td><td>9112.5</td><td>9266.67</td><td>9150</td><td>8775</td><td>3665.5</td><td>4525</td><td>15550</td><td>16787.5</td><td>12743.75</td><td>12800</td><td>13400</td><td>12000</td><td>3750</td><td>25725</td><td>1337.5</td><td>1612.5</td><td>2500</td><td>3366.67</td>
+				</tr><tr align="left">
+					<td>Meghalaya</td><td>1964</td><td>2723.2</td><td>2710.6</td><td>7200</td><td>9000</td><td>10166.67</td><td>10050</td><td>9290</td><td>4168</td><td>6351.6</td><td>13500</td><td>16753.4</td><td>14156.5</td><td>14213.2</td><td>17000</td><td>13050</td><td>6700</td><td>33200</td><td>1784</td><td>1860</td><td>4300</td><td>4600</td>
+				</tr><tr align="left">
+					<td>Odisha</td><td>2637.14</td><td>2973.71</td><td>2637.14</td><td>6500</td><td>9266.71</td><td>9381</td><td>9257.14</td><td>8785.71</td><td>3992.43</td><td>4462</td><td>&nbsp;</td><td>19776</td><td>12899.43</td><td>&nbsp;</td><td>14710.29</td><td>13133.29</td><td>4088.14</td><td>21071.43</td><td>1902.86</td><td>1472.86</td><td>2842.86</td><td>3914.29</td>
+				</tr><tr align="left">
+					<td>Puducherry</td><td>3200</td><td>3000</td><td>2800</td><td>6800</td><td>9600</td><td>11200</td><td>9400</td><td>9200</td><td>3800</td><td>4400</td><td>15500</td><td>19700</td><td>15200</td><td>&nbsp;</td><td>13000</td><td>11900</td><td>4600</td><td>29000</td><td>1800</td><td>3200</td><td>4200</td><td>3700</td>
+				</tr><tr align="left">
+					<td>Punjab</td><td>2450</td><td>1995</td><td>2200</td><td>5900</td><td>8750</td><td>8850</td><td>8325</td><td>8600</td><td>3800</td><td>4250</td><td>17150</td><td>15900</td><td>13400</td><td>13550</td><td>15900</td><td>11800</td><td>3500</td><td>22500</td><td>1770</td><td>950</td><td>2500</td><td>3100</td>
+				</tr><tr align="left">
+					<td>Rajasthan</td><td>2700</td><td>2138</td><td>2550</td><td>6580</td><td>8760</td><td>8880</td><td>8375</td><td>8344</td><td>3770</td><td>4260</td><td>17004.4</td><td>16740</td><td>11700</td><td>13354</td><td>15628.33</td><td>10450</td><td>4170</td><td>22900</td><td>1710</td><td>1120</td><td>1920</td><td>2720</td>
+				</tr><tr align="left">
+					<td>Sikkim</td><td>5633</td><td>2400</td><td>2700</td><td>8000</td><td>11000</td><td>11500</td><td>11000</td><td>10000</td><td>4500</td><td>5900</td><td>&nbsp;</td><td>21538</td><td>13187</td><td>&nbsp;</td><td>20879</td><td>&nbsp;</td><td>5000</td><td>51934</td><td>1500</td><td>2500</td><td>3450</td><td>4400</td>
+				</tr><tr align="left">
+					<td>Tamil Nadu</td><td>4035</td><td>3136.25</td><td>3552.5</td><td>7000</td><td>9530</td><td>11093.75</td><td>9306.25</td><td>8828.57</td><td>3783.75</td><td>&nbsp;</td><td>18636.88</td><td>&nbsp;</td><td>13239.75</td><td>&nbsp;</td><td>14459.38</td><td>12298</td><td>4818.75</td><td>26500</td><td>1683.33</td><td>2712.5</td><td>3175</td><td>3575</td>
+				</tr><tr align="left">
+					<td>Telangana</td><td>3680</td><td>2741.67</td><td>3158.33</td><td>6575</td><td>9175</td><td>9841.67</td><td>9175</td><td>8600</td><td>3636.67</td><td>5033.33</td><td>14900</td><td>17916.67</td><td>11720</td><td>14016.67</td><td>13866.67</td><td>12340</td><td>5166.67</td><td>27383.33</td><td>1390</td><td>2560</td><td>3091.67</td><td>3533.33</td>
+				</tr><tr align="left">
+					<td>Tripura</td><td>2800</td><td>&nbsp;</td><td>2700</td><td>6500</td><td>10300</td><td>9500</td><td>8800</td><td>9700</td><td>4000</td><td>6200</td><td>&nbsp;</td><td>17900</td><td>13900</td><td>14500</td><td>18000</td><td>12400</td><td>3700</td><td>16500</td><td>700</td><td>1500</td><td>3200</td><td>6000</td>
+				</tr><tr align="left">
+					<td>Uttar Pradesh</td><td>2526.92</td><td>1926.92</td><td>2219.23</td><td>6464.62</td><td>9038.33</td><td>9126.15</td><td>8946.15</td><td>8739.23</td><td>3882.31</td><td>5037.5</td><td>17868.5</td><td>17390</td><td>13043.58</td><td>13994.17</td><td>16150.33</td><td>12600.58</td><td>4070.83</td><td>24862.5</td><td>1770.77</td><td>1527.69</td><td>2617.5</td><td>3265</td>
+				</tr><tr align="left">
+					<td>Uttarakhand</td><td>2612.5</td><td>2045</td><td>2255</td><td>7300</td><td>9825</td><td>9900</td><td>9700</td><td>8025</td><td>3750</td><td>5250</td><td>17275</td><td>17100</td><td>13025</td><td>13750</td><td>16325</td><td>&nbsp;</td><td>3862.5</td><td>24800</td><td>1862.5</td><td>1650</td><td>2675</td><td>4525</td>
+				</tr><tr align="left">
+					<td>West Bengal</td><td>2750</td><td>1800.67</td><td>2450</td><td>7010</td><td>10210</td><td>9920</td><td>10090</td><td>9500</td><td>3820</td><td>4234</td><td>19066.67</td><td>17750</td><td>11575</td><td>14240</td><td>15720</td><td>12212</td><td>4240</td><td>23310</td><td>1340</td><td>1430</td><td>3280</td><td>4740</td>
+				</tr>
+			</tbody>
+		</table>
+	</div></div></td></tr></tbody><tfoot><tr><td><div><table style="width:100%;"><tbody><tr><td align="left"><b>Source:-&nbsp;&nbsp;</b><i>State civil supplies Dept.</i></td><td><b>Note:-</b> All India Consumption Weighted Average Prices of Oils w.e.f 23-Feb-2022 and Wheat and Atta w.e.f 25-Feb-2023  </td><td align="right">NR&nbsp;-&gt; Not Reported&nbsp;&nbsp;</td><td></td></tr><tr><td colspan="2" style="text-align:center;"><b>Developed by:-&nbsp;&nbsp;</b>National Informatics Centre(NIC)</td></tr><tr></tr></tbody></table></div></td></tr></tfoot></table></div><div style="page-break-after:always"></div>
+</div>
+                </td>
+            </tr>
+        </tbody></table>
+    </div>
+    
+    </form>
+
+
+</body></html>
