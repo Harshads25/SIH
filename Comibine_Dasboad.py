@@ -53,6 +53,18 @@ app.layout = dbc.Container([
     ]),
     dbc.Row([
         dbc.Col([
+            html.H5("Select Date Range"),
+            dcc.DatePickerRange(
+                id='date-picker-range',
+                min_date_allowed=df['Date'].min(),
+                max_date_allowed=df['Date'].max(),
+                start_date=df['Date'].min(),
+                end_date=df['Date'].max()
+            )
+        ], width=12)
+    ]),
+    dbc.Row([
+        dbc.Col([
             html.Div(id='data-graph-container')
         ], width=12)
     ])
@@ -93,10 +105,15 @@ def update_graph(selected_data_type):
 # Callback to update the price trend graph
 @app.callback(
     Output('price-trend-graph', 'figure'),
-    Input('price-dropdown', 'value')
+    [Input('price-dropdown', 'value'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
 )
-def update_price_graph(selected_column):
-    fig = px.line(df_numeric, x='Date', y=selected_column, title=f'Price Trends: {selected_column}')
+def update_price_graph(selected_column, start_date, end_date):
+    # Filter data between the selected date range
+    df_filtered = df_numeric[(df_numeric['Date'] >= start_date) & (df_numeric['Date'] <= end_date)]
+    
+    fig = px.line(df_filtered, x='Date', y=selected_column, title=f'Price Trends: {selected_column}')
     
     # Update layout to add background color and increase height
     fig.update_layout(
@@ -108,12 +125,14 @@ def update_price_graph(selected_column):
     
     return fig
 
-# Callback to update the weather graph based on selected data type
+# Callback to update the weather graph based on selected data type and date range
 @app.callback(
     Output('weather-graph', 'figure'),
-    Input('weather-dropdown', 'value')
+    [Input('weather-dropdown', 'value'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
 )
-def update_weather_graph(selected_data):
+def update_weather_graph(selected_data, start_date, end_date):
     if selected_data is None:
         # Return an empty figure
         return {
@@ -126,8 +145,11 @@ def update_weather_graph(selected_data):
     
     df_weather = fetch_weather_data()
 
+    # Filter data between the selected date range
+    df_filtered = df_weather[(df_weather['time'] >= start_date) & (df_weather['time'] <= end_date)]
+
     # Plot the selected weather data
-    fig = px.line(df_weather, x='time', y=selected_data, title=f'{selected_data.replace("_", " ").title()} Over Time')
+    fig = px.line(df_filtered, x='time', y=selected_data, title=f'{selected_data.replace("_", " ").title()} Over Time')
     
     # Update layout to add background color and height
     fig.update_layout(
