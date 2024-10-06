@@ -1,167 +1,123 @@
-from dash import Dash, dcc, html
-import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+import streamlit as st
 import requests
 import pandas as pd
 import plotly.express as px
+import time
 
-# Load the price trend data
-file_path = "/Users/harshadshingde/Downloads/excel_maharastra.csv"
-df = pd.read_csv(file_path)
-
-# Convert 'Date' column to datetime format and handle day-first dates
-df['Date'] = pd.to_datetime(df['Date'], dayfirst=True)
-
-# Filter out non-numeric columns and resample for daily data
-numeric_columns = df.select_dtypes(include='number').columns
-df_numeric = df[['Date'] + list(numeric_columns)]  # Keep 'Date' and numeric columns only
-df_numeric = df_numeric.set_index('Date').resample('D').mean().reset_index()
-
-# Fetch data from Open Meteo API
+# Function to fetch weather data from Open Meteo API
+def fetch_weather_data():"/Users/harshadshingde/Downloads/excel_maharastra (1).csv"
 def fetch_weather_data():
-    url = 'https://archive-api.open-meteo.com/v1/archive?latitude=21.1463&longitude=79.0849&start_date=2022-05-01&end_date=2024-09-04&hourly=rain,soil_temperature_0_to_7cm&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum&timezone=auto'
+    url = ('https://archive-api.open-meteo.com/v1/archive?'
+           'latitude=21.455335357109544&longitude=78.95753859046016&'
+           'start_date=2024-05-01&end_date=2024-09-04&hourly=soil_temperature_0_to_7cm&'
+           'daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto')
+       
     response = requests.get(url)
     data = response.json()
 
     # Process daily data into a DataFrame
     daily_data = data['daily']
-    df_weather = pd.DataFrame(daily_data)
-    df_weather['time'] = pd.to_datetime(df_weather['time'])
-    return df_weather
+    df = pd.DataFrame(daily_data)
+    df['time'] = pd.to_datetime(df['time'])
+    return df
 
-# Initialize the Dash app
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+# Function to load price trend data
+def load_price_data(file_path):
+    df = pd.read_csv(file_path, parse_dates=['Date'])  # Ensure 'Date' column is parsed as datetime
+    return df
 
-# App layout
-app.layout = dbc.Container([
-    dbc.Row([
-        dbc.Col(html.H1("Data Dashboard", className='text-center mb-4'), width=12)
-    ]),
-    dbc.Row([
-        dbc.Col([
-            html.H5("Select Data Type"),
-            dcc.Dropdown(
-                id='data-type-dropdown',
-                options=[
-                    {'label': 'Price Trends', 'value': 'price'},
-                    {'label': 'Weather Data', 'value': 'weather'}
-                ],
-                value='price',  # Default selection
-                clearable=False
-            )
-        ], width=6),
-    ]),
-    dbc.Row([
-        dbc.Col([
-            html.H5("Select Date Range"),
-            dcc.DatePickerRange(
-                id='date-picker-range',
-                min_date_allowed=df['Date'].min(),
-                max_date_allowed=df['Date'].max(),
-                start_date=df['Date'].min(),
-                end_date=df['Date'].max()
-            )
-        ], width=12)
-    ]),
-    dbc.Row([
-        dbc.Col([
-            html.Div(id='data-graph-container')
-        ], width=12)
-    ])
-])
+# File path for price data
+price_data_file_path = "/Users/harshadshingde/Downloads/excel_maharastra.csv"
+price_df = load_price_data(price_data_file_path)
 
-# Callback to update the displayed graph based on selected data type
-@app.callback(
-    Output('data-graph-container', 'children'),
-    Input('data-type-dropdown', 'value')
-)
-def update_graph(selected_data_type):
-    if selected_data_type == 'price':
-        return [
-            html.H5("Select Price Data to View"),
-            dcc.Dropdown(
-                id='price-dropdown',
-                options=[{'label': col, 'value': col} for col in numeric_columns],
-                value=numeric_columns[0],
-                clearable=False
-            ),
-            dcc.Graph(id='price-trend-graph'),
-        ]
-    else:
-        return [
-            html.H5("Select Weather Data to View"),
-            dcc.Dropdown(
-                id='weather-dropdown',
-                options=[
-                    {'label': 'Max Temperature (°C)', 'value': 'temperature_2m_max'},
-                    {'label': 'Min Temperature (°C)', 'value': 'temperature_2m_min'},
-                    {'label': 'Rainfall (mm)', 'value': 'rain_sum'}
-                ],
-                clearable=False
-            ),
-            dcc.Graph(id='weather-graph'),
-        ]
+# Initialize session state variables
+if "animation_running" not in st.session_state:
+    st.session_state.animation_running = False
 
-# Callback to update the price trend graph
-@app.callback(
-    Output('price-trend-graph', 'figure'),
-    [Input('price-dropdown', 'value'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date')]
-)
-def update_price_graph(selected_column, start_date, end_date):
-    # Filter data between the selected date range
-    df_filtered = df_numeric[(df_numeric['Date'] >= start_date) & (df_numeric['Date'] <= end_date)]
-    
-    fig = px.line(df_filtered, x='Date', y=selected_column, title=f'Price Trends: {selected_column}')
-    
-    # Update layout to add background color and increase height
-    fig.update_layout(
-        height=750,  # Set the height of the graph
-        yaxis=dict(scaleanchor="x", scaleratio=2),  # Adjust aspect ratio
-        plot_bgcolor="lightgray",  # Set plot background color
-        paper_bgcolor="lightblue",  # Set the paper background color (outside plot)
-    )
-    
-    return fig
+# Sidebar for navigation and animation control
+st.sidebar.title("Dashboard")
+tabs = st.sidebar.radio("Choose a tab", ["Weather Data", "Price Trends"])
 
-# Callback to update the weather graph based on selected data type and date range
-@app.callback(
-    Output('weather-graph', 'figure'),
-    [Input('weather-dropdown', 'value'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date')]
-)
-def update_weather_graph(selected_data, start_date, end_date):
-    if selected_data is None:
-        # Return an empty figure
-        return {
-            "layout": {
-                "xaxis": {"title": "Date"},
-                "yaxis": {"title": "Weather Data"},
-                "title": "Select a data type to display"
-            }
-        }
-    
-    df_weather = fetch_weather_data()
+# Animation control elements in the sidebar
+animation_speed = st.sidebar.slider("Animation Speed (1 , 10 )", 1, 10, 5)
+if st.sidebar.button("Start Animation"):
+    st.session_state.animation_running = True
 
-    # Filter data between the selected date range
-    df_filtered = df_weather[(df_weather['time'] >= start_date) & (df_weather['time'] <= end_date)]
+if st.sidebar.button("Stop Animation"):
+    st.session_state.animation_running = False
 
-    # Plot the selected weather data
-    fig = px.line(df_filtered, x='time', y=selected_data, title=f'{selected_data.replace("_", " ").title()} Over Time')
-    
-    # Update layout to add background color and height
-    fig.update_layout(
-        height=750,  # Set the height of the graph
-        plot_bgcolor="lightgray",  # Set plot background color
-        paper_bgcolor="lightblue",  # Set the paper background color (outside plot)
-        xaxis_title='Date',
-        yaxis_title=selected_data.replace("_", " ").title()
+# Weather Data tab
+if tabs == "Weather Data":
+    st.title("Climate Insights")
+
+    # Fetch and display weather data
+    st.write("Fetching weather data...")
+    weather_df = fetch_weather_data()
+
+    # Dropdown to select weather data type
+    weather_type = st.selectbox(
+        "Select Weather Data Type",
+        ["Max Temperature (°C)", "Min Temperature (°C)", "Rainfall (mm)"],
+        index=0
     )
 
-    return fig
+    # Map the display name to column name in the dataframe
+    weather_mapping = {
+        "Max Temperature (°C)": "temperature_2m_max",
+        "Min Temperature (°C)": "temperature_2m_min",
+        "Rainfall (mm)": "rain_sum"
+    }
+    selected_data = weather_mapping[weather_type]
+    
+    # Display the initial graph
+    st.write("### Weather Data Plot")
+    plot_container = st.empty()  # Use st.empty() to allow dynamic updates
+    fig = px.line(weather_df, x='time', y=selected_data, title=f'{weather_type} Over Time')
+    plot_container.plotly_chart(fig)
+    
+    # Animation logic using st.session_state
+    if st.session_state.animation_running:
+        speed = (11 - animation_speed) * 0.1  # Adjust speed according to the slider
+        for i in range(1, len(weather_df) + 1):
+            fig = px.line(weather_df[:i], x='time', y=selected_data, title=f'{weather_type} Over Time')
+            fig.update_layout(xaxis_title='Date', yaxis_title=weather_type)
+            plot_container.plotly_chart(fig)
+            
+            # Use the st.empty() to update dynamically without blocking the UI
+            time.sleep(speed)  # Control animation speed
 
-# Run the app
-if __name__ == '__main__':
-    app.run_server(debug=True)
+            # Check if the animation should stop
+            if not st.session_state.animation_running:
+                break
+
+# Price Trends tab
+elif tabs == "Price Trends":
+    st.title("Market Price Tracker")
+
+    # Dropdown to select commodity
+    commodity = st.selectbox(
+        "Select Commodity to View Price Trends",
+        options=[col for col in price_df.columns if col != 'Date'],
+        index=0
+    )
+
+    # Display the initial graph
+    st.write("### Price Trends Plot")
+    plot_container = st.empty()
+    fig = px.line(price_df, x="Date", y=commodity, title=f'Price Trends: {commodity}')
+    plot_container.plotly_chart(fig)
+
+    # Animation logic using st.session_state
+    if st.session_state.animation_running:
+        speed = (11 - animation_speed) * 0.1  # Adjust speed according to the slider
+        for i in range(1, len(price_df) + 1):
+            fig = px.line(price_df[:i], x="Date", y=commodity, title=f'Price Trends: {commodity}')
+            fig.update_layout(xaxis_title='Date', yaxis_title='Price')
+            plot_container.plotly_chart(fig)
+            
+            # Use the st.empty() to update dynamically without blocking the UI
+            time.sleep(speed)  # Control animation speed
+
+            # Check if the animation should stop
+            if not st.session_state.animation_running:
+                break
