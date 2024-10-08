@@ -1,16 +1,13 @@
 import streamlit as st
 import requests
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
 import time
 
 # Function to fetch weather data from Open Meteo API
 def fetch_weather_data():
-    url = ('https://archive-api.open-meteo.com/v1/archive?' 
-           'latitude=21.455335357109544&longitude=78.95753859046016&'
-           'start_date=2024-05-01&end_date=2024-09-04&hourly=soil_temperature_0_to_7cm&'
-           'daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto')
-       
+    url = ('https://archive-api.open-meteo.com/v1/archive?latitude=21.1463&longitude=79.0849&start_date=2024-05-01&end_date=2024-09-04&hourly=soil_temperature_0_to_7cm&daily=temperature_2m_max,temperature_2m_min,rain_sum&timezone=auto')
+    
     response = requests.get(url)
     data = response.json()
 
@@ -25,8 +22,12 @@ def load_price_data(file_path):
     df = pd.read_csv(file_path, parse_dates=['Date'])  # Ensure 'Date' column is parsed as datetime
     return df
 
-# File path for price data
+# File path for price data, background, and logo
 price_data_file_path = "/Users/harshadshingde/Downloads/excel_maharastra.csv"
+logo_path = "/Users/harshadshingde/Desktop/SIH/Arthex.png"
+background_path = "/Users/harshadshingde/Desktop/SIH/Bagraoud.jpg"  # Change to JPEG if AVIF fails
+
+# Load price data
 price_df = load_price_data(price_data_file_path)
 
 # Initialize session state variables
@@ -36,9 +37,34 @@ if "animation_running" not in st.session_state:
 # Set the page config to wide
 st.set_page_config(page_title="Climate Insights and Market Price Tracker", layout="wide")
 
+# Custom CSS to add the background image and display the logo in the corner
+st.markdown(
+    f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        background-image: url('file://{background_path}');
+        background-size: cover;
+        background-position: center;
+        height: 100vh;  /* Set height to cover the full view */
+        width: 100%;  /* Set width to cover the full view */
+    }}
+    .logo {{
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 150px;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Display the logo using Streamlit's st.image()
+st.image(logo_path, width=150, caption="Arthex", use_column_width=False)
+
 # Sidebar for navigation and animation control
 st.sidebar.title("Dashboard")
-tabs = st.sidebar.radio("Choose a tab", ["Weather Data and Price Trends"])
+tabs = st.sidebar.radio("Choose a tab", ["Weather Data and Price Trends", "Cumulative Rain Effect on Price Trends"])
 
 # Animation control elements in the sidebar
 animation_speed = st.sidebar.slider("Animation Speed (1 , 10 )", 1, 10, 5)
@@ -48,18 +74,7 @@ if st.sidebar.button("Start Animation"):
 if st.sidebar.button("Stop Animation"):
     st.session_state.animation_running = False
 
-# Set background style
-st.markdown(
-    """
-    <style>
-    .reportview-container {
-        background: url("https://path_to_your_background_image.jpg");
-        background-size: cover;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# The rest of your code goes here...
 
 # Merged Weather Data and Price Trends tab
 if tabs == "Weather Data and Price Trends":
@@ -69,27 +84,24 @@ if tabs == "Weather Data and Price Trends":
     st.write("Fetching weather data...")
     weather_df = fetch_weather_data()
 
-    # Date range selection
-    start_date, end_date = st.date_input("Select Date Range", [weather_df['time'].min(), weather_df['time'].max()])
-    weather_df = weather_df[(weather_df['time'] >= pd.to_datetime(start_date)) & (weather_df['time'] <= pd.to_datetime(end_date))]
-
     # Dropdown to select weather data type with "None" option
     weather_type = st.selectbox(
         "Select Weather Data Type",
-        ["None", "Max Temperature (°C)", "Min Temperature (°C)"],
+        ["None", "Max Temperature (°C)", "Min Temperature (°C)", "Rainfall (mm)"],
         index=0
     )
 
     # Map the display name to column name in the dataframe
     weather_mapping = {
         "Max Temperature (°C)": "temperature_2m_max",
-        "Min Temperature (°C)": "temperature_2m_min"
+        "Min Temperature (°C)": "temperature_2m_min",
+        "Rainfall (mm)": "rain_sum"
     }
     selected_data = weather_mapping.get(weather_type)
 
-    # Load and filter price data
-    price_df_filtered = price_df[(price_df['Date'] >= pd.to_datetime(start_date)) & (price_df['Date'] <= pd.to_datetime(end_date))]
-    
+    # Load price data
+    price_df_filtered = price_df
+
     # Dropdown to select commodity
     commodity = st.selectbox(
         "Select Commodity to View Price Trends",
@@ -97,8 +109,8 @@ if tabs == "Weather Data and Price Trends":
         index=0
     )
 
-    # Display the combined graph
-    st.write("### Combined Weather and Price Data Plot")
+    # Display the combined graph with separate y-axes
+    st.write("### Combined Weather and Price Data ")
     plot_container = st.empty()  # Use st.empty() to allow dynamic updates
 
     # Create a combined DataFrame for plotting
@@ -108,23 +120,35 @@ if tabs == "Weather Data and Price Trends":
         'Price': price_df_filtered[commodity].values[:len(weather_df)]
     })
 
-    fig = px.line(combined_df, x='Date', y='Price', title='Price Trends Over Time', 
-                   labels={'Price': commodity})
+    # Plot with secondary y-axis for weather and price
+    fig = go.Figure()
+
+    # Add price data
+    fig.add_trace(go.Scatter(x=combined_df['Date'], y=combined_df['Price'], mode='lines', name=f'Price of {commodity}', yaxis="y1", line=dict(color='blue')))
 
     if selected_data is not None:
-        # Plot weather data if a valid type is selected
-        fig.add_scatter(x=combined_df['Date'], y=combined_df['Weather'], mode='lines', 
-                         name=f'{weather_type} of Weather', line=dict(color='red'))
+        # Add weather data on secondary y-axis
+        fig.add_trace(go.Scatter(x=combined_df['Date'], y=combined_df['Weather'], mode='lines', name=f'{weather_type}', yaxis="y2", line=dict(color='red')))
 
-    # Plot price trends
-    fig.add_scatter(x=combined_df['Date'], y=combined_df['Price'], mode='lines', 
-                     name=f'Price of {commodity}', line=dict(color='blue'))
-
-    # Update layout for size
+    # Set up layout for separate y-axes
     fig.update_layout(
-        width=1200,  # Set width to your desired value
-        height=600,  # Set height to your desired value
-        title_x=0.5  # Center the title
+        width=1200,
+        height=600,
+        title='Price and Weather Trends with Separate Y-Axes',
+        xaxis_title='Date',
+        yaxis=dict(
+            title='Price',
+            titlefont=dict(color='blue'),
+            tickfont=dict(color='blue')
+        ),
+        yaxis2=dict(
+            title=weather_type if selected_data else '',
+            titlefont=dict(color='red'),
+            tickfont=dict(color='red'),
+            overlaying='y',
+            side='right'
+        ),
+        title_x=0.5
     )
 
     plot_container.plotly_chart(fig)
@@ -133,26 +157,98 @@ if tabs == "Weather Data and Price Trends":
     if st.session_state.animation_running:
         speed = (11 - animation_speed) * 0.1  # Adjust speed according to the slider
         for i in range(1, len(combined_df) + 1):
-            fig = px.line(combined_df[:i], x='Date', y='Price', title='Price Trends Over Time',
-                           labels={'Price': commodity})
+            fig = go.Figure()
+
+            # Add price data
+            fig.add_trace(go.Scatter(x=combined_df['Date'][:i], y=combined_df['Price'][:i], mode='lines', name=f'Price of {commodity}', yaxis="y1", line=dict(color='blue')))
 
             if selected_data is not None:
-                fig.add_scatter(x=combined_df[:i]['Date'], y=combined_df[:i]['Weather'], mode='lines', 
-                                 name=f'{weather_type} of Weather', line=dict(color='red'))
+                fig.add_trace(go.Scatter(x=combined_df['Date'][:i], y=combined_df['Weather'][:i], mode='lines', name=f'{weather_type}', yaxis="y2", line=dict(color='red')))
 
-            fig.add_scatter(x=combined_df[:i]['Date'], y=combined_df[:i]['Price'], mode='lines', 
-                             name=f'Price of {commodity}', line=dict(color='blue'))
-
-            # Update layout for size
+            # Update layout for separate y-axes
             fig.update_layout(
-                width=1200,  # Set width to your desired value
-                height=600,  # Set height to your desired value
-                title_x=0.5  # Center the title
+                width=1200,
+                height=600,
+                title='Price and Weather Trends with Separate Y-Axes',
+                xaxis_title='Date',
+                yaxis=dict(
+                    title='Price',
+                    titlefont=dict(color='blue'),
+                    tickfont=dict(color='blue')
+                ),
+                yaxis2=dict(
+                    title=weather_type if selected_data else '',
+                    titlefont=dict(color='red'),
+                    tickfont=dict(color='red'),
+                    overlaying='y',
+                    side='right'
+                ),
+                title_x=0.5
             )
 
             plot_container.plotly_chart(fig)
-            time.sleep(speed)  # Control animation speed
+            time.sleep(speed)
 
-            # Check if the animation should stop
             if not st.session_state.animation_running:
                 break
+
+# Cumulative Rain Effect on Price Trends tab
+if tabs == "Cumulative Rain Effect on Price Trends":
+    st.title("Cumulative Effect of Rainfall on Price Trends")
+
+    # Fetch weather data
+    weather_df = fetch_weather_data()
+
+    # Filter the weather data for rainfall
+    rain_df = weather_df[['time', 'rain_sum']]
+
+    # Filter price data
+    price_df_filtered = price_df
+
+    # Select commodity
+    commodity = st.selectbox(
+        "Select Commodity to View Price Trends During Rainfall",
+        options=[col for col in price_df_filtered.columns if col != 'Date'],
+        index=0
+    )
+
+    # Calculate cumulative rainfall over the past 7 days
+    cumulative_rain = rain_df['rain_sum'].rolling(window=7).sum().fillna(0)  # 7-day rolling sum
+    combined_cumulative_df = pd.DataFrame({
+        'Date': rain_df['time'],
+        '7-Day Cumulative Rainfall (mm)': cumulative_rain,
+        'Price': price_df_filtered[commodity].values[:len(rain_df)]
+    })
+
+    # Create the graph for cumulative rainfall and its effect on price trends
+    st.write("### Cumulative Rainfall and Price Trends")
+    fig_cumulative = go.Figure()
+
+    # Plot cumulative rainfall
+    fig_cumulative.add_trace(go.Scatter(x=combined_cumulative_df['Date'], y=combined_cumulative_df['7-Day Cumulative Rainfall (mm)'], mode='lines', name='7-Day Cumulative Rainfall (mm)', yaxis="y2", line=dict(color='green')))
+
+    # Plot price trends
+    fig_cumulative.add_trace(go.Scatter(x=combined_cumulative_df['Date'], y=combined_cumulative_df['Price'], mode='lines', name=f'Price of {commodity}', yaxis="y1", line=dict(color='blue')))
+
+    # Set up layout for separate y-axes
+    fig_cumulative.update_layout(
+        width=1200,
+        height=600,
+        title='Cumulative Rainfall and Price Trends',
+        xaxis_title='Date',
+        yaxis=dict(
+            title='Price',
+            titlefont=dict(color='blue'),
+            tickfont=dict(color='blue')
+        ),
+        yaxis2=dict(
+            title='7-Day Cumulative Rainfall (mm)',
+            titlefont=dict(color='green'),
+            tickfont=dict(color='green'),
+            overlaying='y',
+            side='right'
+        ),
+        title_x=0.5
+    )
+
+    st.plotly_chart(fig_cumulative)
